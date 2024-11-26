@@ -8,6 +8,12 @@ keywords:
 lang: en-US
 title: Event and State WebSocket API - Python
 ---
+# committed changes
+
+ - Utils.py for cross platform clearing.
+ - menu.py: added debug lines, Update cross-platform clearing.
+ - Main.py: Added debug lines, changed extra_header to Additional_header for Websocket library.
+---
 
 # Event and State WebSocket API - Python
 
