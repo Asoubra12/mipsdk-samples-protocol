@@ -1,4 +1,13 @@
+changes
 ---
+
+in EventsAndStateWebSocketApiPython
+---
+ - Utils.py for cross platform clearing.
+ - menu.py: added debug lines, Update cross-platform clearing.
+ - Main.py: Added debug lines, changed extra_header to Additional_header for Websocket library.
+---
+
 description:  This repo contains samples that demonstrate MIP SDK protocol integration.
 keywords:
 - MIP SDK
