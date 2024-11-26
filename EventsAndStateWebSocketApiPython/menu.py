@@ -10,6 +10,7 @@ import urllib3
 import identity_provider
 import config
 from http import HTTPStatus
+from utils import clear_screen
 
 art = r"""
 
@@ -37,7 +38,7 @@ if not verify_ssl:
     
 def print_options():
     ctypes.windll.kernel32.SetConsoleTitleW(f"Events and state API sample")
-    os.system("clear")
+    clear_screen()
     print(art)
     print(menu)
 
@@ -52,6 +53,10 @@ def login():
         if response.status_code == 200:
             token_response = response.json()
             access_token = token_response["access_token"]
+            # Add more detailed debug info
+            print(f"[DEBUG] Full token response: {token_response}")
+            print(f"[DEBUG] Token type: {token_response.get('token_type', 'not specified')}")
+            print(f"[DEBUG] Expires in: {token_response.get('expires_in', 'not specified')}")
             return server_url, access_token
         else:
             error = f"{response.status_code} ({HTTPStatus(response.status_code).phrase})"
