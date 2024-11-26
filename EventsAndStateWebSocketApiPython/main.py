@@ -52,10 +52,22 @@ async def main(gateway_uri, access_token, mode):
                 connection_uri = f"ws://{gateway_uri.split('//')[1]}/api/ws/events/v1/"
 
             receive_events_task = None
+            
+            # Debug prints before connection
+            print(f"[DEBUG] Full connection URI: {connection_uri}")
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+            print(f"[DEBUG] Full headers: {headers}")
 
-            async with connect(connection_uri, extra_headers={"Authorization": f"Bearer {access_token}"}) as web_socket:
-
-
+            async with connect(
+                connection_uri, 
+                additional_headers=headers,
+                ping_interval=None,  # Disable ping/pong
+                ping_timeout=None    # Disable ping/pong timeout
+            ) as web_socket:
                 # Start or resume session
                 session = await ess_api.start_session(web_socket, session_id, last_event_id)
 
@@ -88,15 +100,18 @@ async def main(gateway_uri, access_token, mode):
                     # Process events
                     await viewer.process_events(events["events"], gateway_uri, access_token)
 
-            # Await the receive_events_task to observe exception
-            if receive_events_task is not None:
-                await receive_events_task
-
         except Exception as e:
             if not escape_task.done():
                 print(f"[!] {e}")
                 print("[*] RECONNECTING...")
                 await asyncio.sleep(1)
+            
+            if receive_events_task is not None:
+                receive_events_task.cancel()
+                try:
+                    await receive_events_task
+                except asyncio.CancelledError:
+                    pass
 
 
 if __name__ == '__main__':
